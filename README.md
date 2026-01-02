@@ -1,13 +1,13 @@
 
 ---
 
-## 🔹 LAB 1 — Backend (Python API)
+## 🔹 Docker LABS
 
 ### 🎯 Goal
-Create a backend API container that returns data.
+Creating frontend and backend application and running those application as containers 
 
 ---
-
+LAB 1 — Backend (Python API)
 ### 📄 backend/app.py
 
 ```python
@@ -37,3 +37,50 @@ EXPOSE 5000
 CMD ["python", "app.py"]
 
 
+//cd backend
+//docker build -t backend-api .
+//docker run -d -p 5000:5000 backend-api
+
+
+## 🔹  LAB 2 — Frontend (NGINX)
+frontend/index.html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Docker Lab</title>
+</head>
+<body>
+  <h1>Frontend Container</h1>
+  <p>Backend running separately</p>
+</body>
+</html>
+
+---
+frontend/nginx.conf
+server {
+    listen 80;
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html;
+    }
+}
+
+---
+frontend/Dockerfile
+FROM nginx:alpine
+
+COPY index.html /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+----
+Hands-on Steps
+cd frontend
+docker build -t frontend-ui .
+docker run -d -p 8080:80 frontend-ui
+
+
+✅ Open in browser:
+http://localhost:8080

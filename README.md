@@ -84,3 +84,90 @@ docker run -d -p 8080:80 frontend-ui
 
 ✅ Open in browser:
 http://localhost:8080
+
+----
+
+
+🔹 LAB 3 — Docker Network (Frontend ↔ Backend)
+🎯 Goal
+
+Enable container-to-container communication using Docker network.
+
+Step 1: Create Network
+docker network create app-network
+
+Step 2: Run Backend on Network
+docker run -d \
+--name backend \
+--network app-network \
+backend-api
+
+---
+LAB 4 — Database with Docker Volume (MySQL)
+🎯 Goal
+
+Persist database data using Docker volumes.
+
+Step 1: Create Volume
+docker volume create mysql-data
+
+Step 2: Run MySQL Container
+docker run -d \
+--name mysql \
+--network app-network \
+-v mysql-data:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=root \
+-e MYSQL_DATABASE=appdb \
+mysql:8
+
+Step 3: Verify Persistence
+docker stop mysql
+docker rm mysql
+
+docker run -d \
+--name mysql \
+--network app-network \
+-v mysql-data:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=root \
+mysql:8
+
+
+➡️ Database data is preserved ✅
+
+🔥 Real production pain point
+Without volumes → database data is lost
+---------
+🔹 LAB 5 — Bind Mount (NGINX Live Reload)
+🎯 Goal
+
+Demonstrate bind mount for local development.
+
+docker run -d \
+-p 8081:80 \
+-v $(pwd)/frontend:/usr/share/nginx/html \
+nginx
+
+
+Change index.html → refresh browser → changes appear instantly.
+
+🧠 Trainer Notes
+
+Bind mount → local development
+
+Volume → production workloads
+
+---
+
+🔹 LAB 6 — Cleanup (VERY IMPORTANT)
+🎯 Goal
+
+Clean unused Docker resources.
+
+docker stop $(docker ps -aq)
+docker rm $(docker ps -aq)
+docker image prune -f
+docker volume prune -f
+
+
+
+
